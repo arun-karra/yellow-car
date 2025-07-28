@@ -4,18 +4,18 @@ import { neon } from '@neondatabase/serverless';
 let sql = null;
 
 try {
-  console.log('Environment check - VITE_DATABASE_URL:', process.env.VITE_DATABASE_URL ? 'SET' : 'NOT SET');
-  console.log('Environment check - import.meta.env.VITE_DATABASE_URL:', import.meta.env.VITE_DATABASE_URL ? 'SET' : 'NOT SET');
+  console.log('Environment check - DATABASE_URL:', process.env.DATABASE_URL ? 'SET' : 'NOT SET');
+  console.log('Environment check - import.meta.env.DATABASE_URL:', import.meta.env.DATABASE_URL ? 'SET' : 'NOT SET');
   
   // Try both process.env and import.meta.env
-  const databaseUrl = process.env.VITE_DATABASE_URL || import.meta.env.VITE_DATABASE_URL;
+  const databaseUrl = process.env.DATABASE_URL || import.meta.env.DATABASE_URL;
   
   if (databaseUrl) {
     console.log('Initializing Neon database connection...');
     sql = neon(databaseUrl);
     console.log('Neon database connection initialized successfully');
   } else {
-    console.warn('VITE_DATABASE_URL not set. Database features will be disabled.');
+    console.warn('DATABASE_URL not set. Database features will be disabled.');
   }
 } catch (error) {
   console.error('Failed to initialize database connection:', error);
