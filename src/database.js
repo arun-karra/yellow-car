@@ -160,7 +160,10 @@ export const getRules = async () => {
 
 // New functions for real-time score synchronization
 export const saveCurrentScores = async (cameronScore, arunScore, currentRound) => {
+  console.log('saveCurrentScores called with:', { cameronScore, arunScore, currentRound });
+  
   if (!sql) {
+    console.log('No database connection, using localStorage');
     // Fallback to localStorage
     localStorage.setItem('yellowCarCameronScore', cameronScore.toString());
     localStorage.setItem('yellowCarArunScore', arunScore.toString());
@@ -169,6 +172,7 @@ export const saveCurrentScores = async (cameronScore, arunScore, currentRound) =
   }
   
   try {
+    console.log('Saving to database...');
     // Delete existing current game record
     await sql`DELETE FROM current_game WHERE id = 1`;
     
@@ -177,34 +181,45 @@ export const saveCurrentScores = async (cameronScore, arunScore, currentRound) =
       INSERT INTO current_game (id, cameron_score, arun_score, current_round, updated_at)
       VALUES (1, ${cameronScore}, ${arunScore}, ${currentRound}, NOW())
     `;
+    console.log('Successfully saved to database');
   } catch (error) {
     console.error('Error saving current scores:', error);
   }
 };
 
 export const getCurrentScores = async () => {
+  console.log('getCurrentScores called');
+  
   if (!sql) {
+    console.log('No database connection, using localStorage');
     // Fallback to localStorage
     const cameronScore = parseInt(localStorage.getItem('yellowCarCameronScore') || '0');
     const arunScore = parseInt(localStorage.getItem('yellowCarArunScore') || '0');
     const currentRound = parseInt(localStorage.getItem('yellowCarCurrentRound') || '1');
+    console.log('localStorage scores:', { cameronScore, arunScore, currentRound });
     return { cameronScore, arunScore, currentRound };
   }
   
   try {
+    console.log('Fetching from database...');
     const result = await sql`
       SELECT cameron_score, arun_score, current_round 
       FROM current_game 
       WHERE id = 1
     `;
     
+    console.log('Database result:', result);
+    
     if (result.length > 0) {
-      return {
+      const scores = {
         cameronScore: result[0].cameron_score,
         arunScore: result[0].arun_score,
         currentRound: result[0].current_round
       };
+      console.log('Returning database scores:', scores);
+      return scores;
     } else {
+      console.log('No database record found, returning defaults');
       return { cameronScore: 0, arunScore: 0, currentRound: 1 };
     }
   } catch (error) {

@@ -18,8 +18,11 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
   useEffect(() => {
     const loadScores = async () => {
       try {
+        console.log('Loading scores from database...');
         const { cameronScore: savedCameronScore, arunScore: savedArunScore, currentRound: savedRound } = await getCurrentScores();
         const { cameronWins: savedCameronWins, arunWins: savedArunWins } = await getWinCounts();
+        
+        console.log('Loaded scores:', { savedCameronScore, savedArunScore, savedCameronWins, savedArunWins, savedRound });
         
         setCameronScore(savedCameronScore);
         setArunScore(savedArunScore);
@@ -49,20 +52,28 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
         const { cameronScore: savedCameronScore, arunScore: savedArunScore, currentRound: savedRound } = await getCurrentScores();
         const { cameronWins: savedCameronWins, arunWins: savedArunWins } = await getWinCounts();
         
+        console.log('Polling - Current scores:', { cameronScore, arunScore });
+        console.log('Polling - Database scores:', { savedCameronScore, savedArunScore });
+        
         // Only update if the scores are different (to avoid unnecessary re-renders)
         if (savedCameronScore !== cameronScore) {
+          console.log('Updating Cameron score from', cameronScore, 'to', savedCameronScore);
           setCameronScore(savedCameronScore);
         }
         if (savedArunScore !== arunScore) {
+          console.log('Updating Arun score from', arunScore, 'to', savedArunScore);
           setArunScore(savedArunScore);
         }
         if (savedCameronWins !== cameronWins) {
+          console.log('Updating Cameron wins from', cameronWins, 'to', savedCameronWins);
           setCameronWins(savedCameronWins);
         }
         if (savedArunWins !== arunWins) {
+          console.log('Updating Arun wins from', arunWins, 'to', savedArunWins);
           setArunWins(savedArunWins);
         }
         if (savedRound !== currentRound) {
+          console.log('Updating round from', currentRound, 'to', savedRound);
           onNewRound(savedRound);
         }
       } catch (error) {
@@ -108,10 +119,12 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
   const adjustScore = async (player, amount) => {
     if (player === 'cameron') {
       const newScore = Math.max(0, cameronScore + amount);
+      console.log('Saving Cameron score:', newScore);
       setCameronScore(newScore);
       await saveCurrentScores(newScore, arunScore, currentRound);
     } else {
       const newScore = Math.max(0, arunScore + amount);
+      console.log('Saving Arun score:', newScore);
       setArunScore(newScore);
       await saveCurrentScores(cameronScore, newScore, currentRound);
     }
