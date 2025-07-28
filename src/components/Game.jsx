@@ -121,12 +121,22 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
       const newScore = Math.max(0, cameronScore + amount);
       console.log('Saving Cameron score:', newScore);
       setCameronScore(newScore);
-      await saveCurrentScores(newScore, arunScore, currentRound);
+      try {
+        await saveCurrentScores(newScore, arunScore, currentRound);
+        console.log('Successfully saved Cameron score to database');
+      } catch (error) {
+        console.error('Error saving Cameron score:', error);
+      }
     } else {
       const newScore = Math.max(0, arunScore + amount);
       console.log('Saving Arun score:', newScore);
       setArunScore(newScore);
-      await saveCurrentScores(cameronScore, newScore, currentRound);
+      try {
+        await saveCurrentScores(cameronScore, newScore, currentRound);
+        console.log('Successfully saved Arun score to database');
+      } catch (error) {
+        console.error('Error saving Arun score:', error);
+      }
     }
   };
 

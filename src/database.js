@@ -184,17 +184,24 @@ export const saveCurrentScores = async (cameronScore, arunScore, currentRound) =
   
   try {
     console.log('Saving to database...');
+    console.log('SQL connection status:', sql ? 'CONNECTED' : 'NOT CONNECTED');
+    
     // Delete existing current game record
-    await sql`DELETE FROM current_game WHERE id = 1`;
+    console.log('Deleting existing record...');
+    const deleteResult = await sql`DELETE FROM current_game WHERE id = 1`;
+    console.log('Delete result:', deleteResult);
     
     // Insert new current game record
-    await sql`
+    console.log('Inserting new record...');
+    const insertResult = await sql`
       INSERT INTO current_game (id, cameron_score, arun_score, current_round, updated_at)
       VALUES (1, ${cameronScore}, ${arunScore}, ${currentRound}, NOW())
     `;
+    console.log('Insert result:', insertResult);
     console.log('Successfully saved to database');
   } catch (error) {
     console.error('Error saving current scores:', error);
+    throw error; // Re-throw so the calling function can catch it
   }
 };
 
