@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Game from './components/Game';
 import History from './components/History';
 import Rules from './components/Rules';
-import { initDatabase } from './database';
+import { initDatabase, getRounds } from './database';
 import './App.css';
 
 // Simple error boundary component
@@ -63,12 +63,18 @@ function App() {
   const [currentRound, setCurrentRound] = useState(1);
   const [roundStartTime, setRoundStartTime] = useState(new Date());
   const [isLoading, setIsLoading] = useState(true);
+  const [roundsHistory, setRoundsHistory] = useState([]);
 
   useEffect(() => {
     // Initialize database when app starts
     const initializeApp = async () => {
       try {
         await initDatabase();
+        // Load rounds history to calculate current round
+        const rounds = await getRounds();
+        setRoundsHistory(rounds);
+        // Set current round to history length + 1
+        setCurrentRound(rounds.length + 1);
       } catch (error) {
         console.error('Failed to initialize app:', error);
       } finally {
@@ -84,10 +90,20 @@ function App() {
     setRoundStartTime(new Date());
   };
 
+  const updateRoundFromHistory = async () => {
+    try {
+      const rounds = await getRounds();
+      setRoundsHistory(rounds);
+      setCurrentRound(rounds.length + 1);
+    } catch (error) {
+      console.error('Error updating round from history:', error);
+    }
+  };
+
   const renderView = () => {
     switch (currentView) {
       case 'history':
-        return <History onBack={() => setCurrentView('game')} />;
+        return <History onBack={() => setCurrentView('game')} onRoundDeleted={updateRoundFromHistory} />;
       case 'rules':
         return <Rules onBack={() => setCurrentView('game')} />;
       default:
@@ -98,6 +114,7 @@ function App() {
             onNewRound={startNewRound}
             onViewHistory={() => setCurrentView('history')}
             onViewRules={() => setCurrentView('rules')}
+            onRoundCompleted={updateRoundFromHistory}
           />
         );
     }

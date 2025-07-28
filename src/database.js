@@ -123,6 +123,24 @@ export const getRounds = async () => {
   }
 };
 
+export const deleteRound = async (roundId) => {
+  if (!sql) {
+    // Fallback to localStorage
+    const rounds = JSON.parse(localStorage.getItem('yellowCarRounds') || '[]');
+    const updatedRounds = rounds.filter(round => round.id !== roundId);
+    localStorage.setItem('yellowCarRounds', JSON.stringify(updatedRounds));
+    return true;
+  }
+  
+  try {
+    await sql`DELETE FROM rounds WHERE id = ${roundId}`;
+    return true;
+  } catch (error) {
+    console.error('Error deleting round:', error);
+    return false;
+  }
+};
+
 export const saveRule = async (content) => {
   if (!sql) {
     // Fallback to localStorage

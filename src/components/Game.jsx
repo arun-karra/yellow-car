@@ -3,7 +3,7 @@ import { saveRound, saveCurrentScores, getCurrentScores, saveWinCounts, getWinCo
 import { format } from 'date-fns';
 import './Game.css';
 
-const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewRules }) => {
+const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewRules, onRoundCompleted }) => {
   const [cameronScore, setCameronScore] = useState(0);
   const [arunScore, setArunScore] = useState(0);
   const [cameronWins, setCameronWins] = useState(0);
@@ -116,6 +116,11 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
         const newWins = arunWins + 1;
         setArunWins(newWins);
         await saveWinCounts(cameronWins, newWins);
+      }
+      
+      // Notify parent that a round was completed
+      if (onRoundCompleted) {
+        onRoundCompleted();
       }
     } catch (error) {
       console.error('Error saving round:', error);

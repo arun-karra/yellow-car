@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { getRounds } from '../database';
+import { getRounds, deleteRound } from '../database';
 import { format } from 'date-fns';
 import './History.css';
 
-const History = ({ onBack }) => {
+const History = ({ onBack, onRoundDeleted }) => {
   const [rounds, setRounds] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [roundToDelete, setRoundToDelete] = useState(null);
 
   useEffect(() => {
     loadRounds();
@@ -33,6 +35,38 @@ const History = ({ onBack }) => {
 
   const getWinnerClass = (winner) => {
     return winner === 'Cameron' ? 'cameron-winner' : 'arun-winner';
+  };
+
+  const handleDeleteClick = (round) => {
+    setRoundToDelete(round);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!roundToDelete) return;
+    
+    try {
+      const success = await deleteRound(roundToDelete.id);
+      if (success) {
+        // Remove the round from the local state
+        setRounds(rounds.filter(round => round.id !== roundToDelete.id));
+        setShowDeleteModal(false);
+        setRoundToDelete(null);
+        // Notify parent component to update round counter
+        if (onRoundDeleted) {
+          onRoundDeleted();
+        }
+      } else {
+        console.error('Failed to delete round');
+      }
+    } catch (error) {
+      console.error('Error deleting round:', error);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false);
+    setRoundToDelete(null);
   };
 
   return (
@@ -63,8 +97,17 @@ const History = ({ onBack }) => {
                 <div className="round-date">
                   {formatDate(round.end_date)}
                 </div>
-                <div className={`winner-badge ${getWinnerClass(round.winner)}`}>
-                  {round.winner} wins
+                <div className="round-actions">
+                  <div className={`winner-badge ${getWinnerClass(round.winner)}`}>
+                    {round.winner} wins
+                  </div>
+                  <button 
+                    className="delete-button"
+                    onClick={() => handleDeleteClick(round)}
+                    title="Delete this round"
+                  >
+                    🗑️
+                  </button>
                 </div>
               </div>
               
@@ -81,6 +124,38 @@ const History = ({ onBack }) => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="delete-modal">
+          <div className="delete-content">
+            <div className="delete-icon">🗑️</div>
+            <h3>Delete Round?</h3>
+            <p>Are you sure you want to delete this round? This action cannot be undone.</p>
+            <div className="delete-round-info">
+              <div className="delete-round-scores">
+                <span>Cameron: {roundToDelete?.cameron_score}</span>
+                <span>vs</span>
+                <span>Arun: {roundToDelete?.arun_score}</span>
+              </div>
+              <div className="delete-round-winner">
+                Winner: {roundToDelete?.winner}
+              </div>
+              <div className="delete-round-date">
+                {roundToDelete && formatDate(roundToDelete.end_date)}
+              </div>
+            </div>
+            <div className="delete-buttons">
+              <button className="cancel-delete-button" onClick={handleDeleteCancel}>
+                Cancel
+              </button>
+              <button className="confirm-delete-button" onClick={handleDeleteConfirm}>
+                Delete Round
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
