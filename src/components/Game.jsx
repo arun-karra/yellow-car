@@ -11,6 +11,8 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
   const [gameStatus, setGameStatus] = useState('');
   const [showInfo, setShowInfo] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
+  const [gameWon, setGameWon] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   const TARGET_SCORE = 50;
 
@@ -85,15 +87,19 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
   }, [cameronScore, arunScore, cameronWins, arunWins, currentRound]);
 
   const checkGameStatus = () => {
-    if (cameronScore >= TARGET_SCORE) {
+    if (!gameWon && cameronScore >= TARGET_SCORE) {
       setGameStatus('Cameron wins!');
+      setGameWon(true);
+      setShowCelebration(true);
       handleRoundEnd('Cameron');
-    } else if (arunScore >= TARGET_SCORE) {
+    } else if (!gameWon && arunScore >= TARGET_SCORE) {
       setGameStatus('Arun wins!');
+      setGameWon(true);
+      setShowCelebration(true);
       handleRoundEnd('Arun');
-    } else if (cameronScore === arunScore && cameronScore > 0) {
+    } else if (cameronScore === arunScore && cameronScore > 0 && !gameWon) {
       setGameStatus("It's a tie!");
-    } else {
+    } else if (!gameWon) {
       setGameStatus('');
     }
   };
@@ -117,6 +123,9 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
   };
 
   const adjustScore = async (player, amount) => {
+    // Don't allow score changes if game is won
+    if (gameWon) return;
+    
     console.log('adjustScore called with:', { player, amount, currentCameronScore: cameronScore, currentArunScore: arunScore });
     
     if (player === 'cameron') {
@@ -146,6 +155,8 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
     setCameronScore(0);
     setArunScore(0);
     setGameStatus('');
+    setGameWon(false);
+    setShowCelebration(false);
     await saveCurrentScores(0, 0, currentRound + 1);
     onNewRound();
   };
@@ -180,6 +191,29 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
         <div className="game-status">
           <span className="trophy-icon">🏆</span>
           {gameStatus}
+        </div>
+      )}
+
+      {/* Celebration Modal */}
+      {showCelebration && (
+        <div className="celebration-modal">
+          <div className="celebration-content">
+            <div className="celebration-icon">🎉</div>
+            <h2 className="celebration-title">{gameStatus}</h2>
+            <p className="celebration-subtitle">Congratulations! The round is complete.</p>
+            <button className="new-round-button" onClick={startNewRound}>
+              🚗 Start New Round
+            </button>
+          </div>
+          <div className="confetti-container">
+            {[...Array(50)].map((_, i) => (
+              <div key={i} className="confetti" style={{
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${2 + Math.random() * 3}s`
+              }}></div>
+            ))}
+          </div>
         </div>
       )}
 
