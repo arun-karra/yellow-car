@@ -124,16 +124,27 @@ export const getRounds = async () => {
 };
 
 export const deleteRound = async (roundId) => {
+  console.log('deleteRound called with ID:', roundId);
+  
   if (!sql) {
+    console.log('No database connection, using localStorage');
     // Fallback to localStorage
     const rounds = JSON.parse(localStorage.getItem('yellowCarRounds') || '[]');
     const updatedRounds = rounds.filter(round => round.id !== roundId);
     localStorage.setItem('yellowCarRounds', JSON.stringify(updatedRounds));
+    console.log('Deleted from localStorage, remaining rounds:', updatedRounds.length);
     return true;
   }
   
   try {
-    await sql`DELETE FROM rounds WHERE id = ${roundId}`;
+    console.log('Deleting from database...');
+    const result = await sql`DELETE FROM rounds WHERE id = ${roundId}`;
+    console.log('Database delete result:', result);
+    
+    // Verify the deletion by checking remaining rounds
+    const remainingRounds = await sql`SELECT COUNT(*) as count FROM rounds`;
+    console.log('Remaining rounds in database:', remainingRounds[0]?.count);
+    
     return true;
   } catch (error) {
     console.error('Error deleting round:', error);

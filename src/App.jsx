@@ -92,9 +92,14 @@ function App() {
 
   const updateRoundFromHistory = async () => {
     try {
+      console.log('Updating round from history...');
       const rounds = await getRounds();
+      console.log('Rounds from database:', rounds);
+      console.log('Rounds length:', rounds.length);
+      const newRoundNumber = rounds.length + 1;
+      console.log('Setting current round to:', newRoundNumber);
       setRoundsHistory(rounds);
-      setCurrentRound(rounds.length + 1);
+      setCurrentRound(newRoundNumber);
     } catch (error) {
       console.error('Error updating round from history:', error);
     }

@@ -46,14 +46,19 @@ const History = ({ onBack, onRoundDeleted }) => {
     if (!roundToDelete) return;
     
     try {
+      console.log('Deleting round:', roundToDelete.id);
       const success = await deleteRound(roundToDelete.id);
+      console.log('Delete success:', success);
       if (success) {
         // Remove the round from the local state
-        setRounds(rounds.filter(round => round.id !== roundToDelete.id));
+        const updatedRounds = rounds.filter(round => round.id !== roundToDelete.id);
+        console.log('Updated rounds count:', updatedRounds.length);
+        setRounds(updatedRounds);
         setShowDeleteModal(false);
         setRoundToDelete(null);
         // Notify parent component to update round counter
         if (onRoundDeleted) {
+          console.log('Calling onRoundDeleted callback');
           onRoundDeleted();
         }
       } else {
