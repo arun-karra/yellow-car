@@ -1,1 +1,28 @@
- 
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background circle -->
+    <circle cx="256" cy="256" r="246" fill="#FFD700" stroke="#FFA500" stroke-width="4"/>
+    
+    <!-- Car body -->
+    <rect x="117.76" y="281.6" width="271.36" height="81.92" rx="20.48" fill="#FFD700" stroke="#FFA500" stroke-width="2"/>
+    
+    <!-- Car roof -->
+    <rect x="158.72" y="199.68" width="194.56" height="81.92" rx="15.36" fill="#FFD700" stroke="#FFA500" stroke-width="2"/>
+    
+    <!-- Windows -->
+    <rect x="179.2" y="220.16" width="61.44" height="40.96" rx="10.24" fill="#87CEEB"/>
+    <rect x="271.36" y="220.16" width="61.44" height="40.96" rx="10.24" fill="#87CEEB"/>
+    
+    <!-- Wheels -->
+    <circle cx="179.2" cy="358.4" r="25.6" fill="#333" stroke="#000" stroke-width="1"/>
+    <circle cx="332.8" cy="358.4" r="25.6" fill="#333" stroke="#000" stroke-width="1"/>
+    <circle cx="179.2" cy="358.4" r="15.36" fill="#666"/>
+    <circle cx="332.8" cy="358.4" r="15.36" fill="#666"/>
+    
+    <!-- Headlights -->
+    <circle cx="138.24" y="322.56" r="10.24" fill="#FFFF00"/>
+    <circle cx="373.76" y="322.56" r="10.24" fill="#FFFF00"/>
+    
+    <!-- Taillights -->
+    <circle cx="138.24" y="337.92" r="7.68" fill="#FF0000"/>
+    <circle cx="373.76" y="337.92" r="7.68" fill="#FF0000"/>
+  </svg>
