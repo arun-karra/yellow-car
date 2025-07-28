@@ -117,6 +117,8 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
   };
 
   const adjustScore = async (player, amount) => {
+    console.log('adjustScore called with:', { player, amount, currentCameronScore: cameronScore, currentArunScore: arunScore });
+    
     if (player === 'cameron') {
       const newScore = Math.max(0, cameronScore + amount);
       console.log('Saving Cameron score:', newScore);
@@ -193,13 +195,19 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
           <div className="score-controls">
             <button 
               className="score-button minus"
-              onClick={() => adjustScore('cameron', -1)}
+              onClick={() => {
+                console.log('Cameron minus button clicked');
+                adjustScore('cameron', -1);
+              }}
             >
               ➖
             </button>
             <button 
               className="score-button plus"
-              onClick={() => adjustScore('cameron', 1)}
+              onClick={() => {
+                console.log('Cameron plus button clicked');
+                adjustScore('cameron', 1);
+              }}
             >
               ➕
             </button>
@@ -216,13 +224,19 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
           <div className="score-controls">
             <button 
               className="score-button minus"
-              onClick={() => adjustScore('arun', -1)}
+              onClick={() => {
+                console.log('Arun minus button clicked');
+                adjustScore('arun', -1);
+              }}
             >
               ➖
             </button>
             <button 
               className="score-button plus"
-              onClick={() => adjustScore('arun', 1)}
+              onClick={() => {
+                console.log('Arun plus button clicked');
+                adjustScore('arun', 1);
+              }}
             >
               ➕
             </button>
