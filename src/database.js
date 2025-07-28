@@ -5,9 +5,14 @@ let sql = null;
 
 try {
   console.log('Environment check - VITE_DATABASE_URL:', process.env.VITE_DATABASE_URL ? 'SET' : 'NOT SET');
-  if (process.env.VITE_DATABASE_URL) {
+  console.log('Environment check - import.meta.env.VITE_DATABASE_URL:', import.meta.env.VITE_DATABASE_URL ? 'SET' : 'NOT SET');
+  
+  // Try both process.env and import.meta.env
+  const databaseUrl = process.env.VITE_DATABASE_URL || import.meta.env.VITE_DATABASE_URL;
+  
+  if (databaseUrl) {
     console.log('Initializing Neon database connection...');
-    sql = neon(process.env.VITE_DATABASE_URL);
+    sql = neon(databaseUrl);
     console.log('Neon database connection initialized successfully');
   } else {
     console.warn('VITE_DATABASE_URL not set. Database features will be disabled.');
