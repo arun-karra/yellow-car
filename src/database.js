@@ -348,20 +348,27 @@ export const getWinCounts = async () => {
   }
   
   try {
-    const result = await sql`
-      SELECT cameron_wins, arun_wins 
-      FROM win_counts 
-      WHERE id = 1
+    // Calculate wins from actual rounds history instead of stored win_counts
+    const rounds = await sql`
+      SELECT winner 
+      FROM rounds 
+      ORDER BY end_date DESC
     `;
     
-    if (result.length > 0) {
-      return {
-        cameronWins: result[0].cameron_wins,
-        arunWins: result[0].arun_wins
-      };
-    } else {
-      return { cameronWins: 0, arunWins: 0 };
-    }
+    let cameronWins = 0;
+    let arunWins = 0;
+    
+    rounds.forEach(round => {
+      if (round.winner === 'Cameron') {
+        cameronWins++;
+      } else if (round.winner === 'Arun') {
+        arunWins++;
+      }
+    });
+    
+    console.log('Calculated wins from rounds history:', { cameronWins, arunWins });
+    
+    return { cameronWins, arunWins };
   } catch (error) {
     console.error('Error fetching win counts:', error);
     return { cameronWins: 0, arunWins: 0 };
