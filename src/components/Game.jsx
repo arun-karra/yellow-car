@@ -21,20 +21,18 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
     const loadScores = async () => {
       try {
         console.log('Loading scores from database...');
-        const { cameronScore: savedCameronScore, arunScore: savedArunScore, currentRound: savedRound } = await getCurrentScores();
+        const { cameronScore: savedCameronScore, arunScore: savedArunScore } = await getCurrentScores();
         const { cameronWins: savedCameronWins, arunWins: savedArunWins } = await getWinCounts();
         
-        console.log('Loaded scores:', { savedCameronScore, savedArunScore, savedCameronWins, savedArunWins, savedRound });
+        console.log('Loaded scores:', { savedCameronScore, savedArunScore, savedCameronWins, savedArunWins });
+        console.log('Using round from App:', currentRound);
         
         setCameronScore(savedCameronScore);
         setArunScore(savedArunScore);
         setCameronWins(savedCameronWins);
         setArunWins(savedArunWins);
         
-        // Update the round if it's different
-        if (savedRound !== currentRound) {
-          onNewRound(savedRound);
-        }
+        // Don't override the round number from App - use it as the single source of truth
       } catch (error) {
         console.error('Error loading scores:', error);
       }
@@ -51,11 +49,12 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
   useEffect(() => {
     const pollInterval = setInterval(async () => {
       try {
-        const { cameronScore: savedCameronScore, arunScore: savedArunScore, currentRound: savedRound } = await getCurrentScores();
+        const { cameronScore: savedCameronScore, arunScore: savedArunScore } = await getCurrentScores();
         const { cameronWins: savedCameronWins, arunWins: savedArunWins } = await getWinCounts();
         
         console.log('Polling - Current scores:', { cameronScore, arunScore });
         console.log('Polling - Database scores:', { savedCameronScore, savedArunScore });
+        console.log('Polling - Using round from App:', currentRound);
         
         // Only update if the scores are different (to avoid unnecessary re-renders)
         if (savedCameronScore !== cameronScore) {
@@ -74,10 +73,7 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
           console.log('Updating Arun wins from', arunWins, 'to', savedArunWins);
           setArunWins(savedArunWins);
         }
-        if (savedRound !== currentRound) {
-          console.log('Updating round from', currentRound, 'to', savedRound);
-          onNewRound(savedRound);
-        }
+        // Don't override the round number from App - use it as the single source of truth
       } catch (error) {
         console.error('Error polling for updates:', error);
       }

@@ -271,9 +271,8 @@ export const getCurrentScores = async () => {
     // Fallback to localStorage
     const cameronScore = parseInt(localStorage.getItem('yellowCarCameronScore') || '0');
     const arunScore = parseInt(localStorage.getItem('yellowCarArunScore') || '0');
-    const currentRound = parseInt(localStorage.getItem('yellowCarCurrentRound') || '1');
-    console.log('localStorage scores:', { cameronScore, arunScore, currentRound });
-    return { cameronScore, arunScore, currentRound };
+    console.log('localStorage scores:', { cameronScore, arunScore });
+    return { cameronScore, arunScore };
   }
   
   try {
@@ -286,7 +285,7 @@ export const getCurrentScores = async () => {
     console.log('Table exists check:', tableCheck);
     
     const result = await sql`
-      SELECT cameron_score, arun_score, current_round 
+      SELECT cameron_score, arun_score 
       FROM current_game 
       WHERE id = 1
     `;
@@ -294,26 +293,19 @@ export const getCurrentScores = async () => {
     console.log('Database result:', result);
     
     if (result.length > 0) {
-      // Calculate the correct round number based on actual rounds history
-      const roundsCount = await sql`SELECT COUNT(*) as count FROM rounds`;
-      const actualRoundNumber = parseInt(roundsCount[0]?.count || 0) + 1;
-      console.log('Rounds count from database:', roundsCount[0]?.count);
-      console.log('Calculated actual round number:', actualRoundNumber);
-      
       const scores = {
         cameronScore: result[0].cameron_score,
-        arunScore: result[0].arun_score,
-        currentRound: actualRoundNumber
+        arunScore: result[0].arun_score
       };
-      console.log('Returning database scores with corrected round:', scores);
+      console.log('Returning database scores:', scores);
       return scores;
     } else {
       console.log('No database record found, returning defaults');
-      return { cameronScore: 0, arunScore: 0, currentRound: 1 };
+      return { cameronScore: 0, arunScore: 0 };
     }
   } catch (error) {
     console.error('Error fetching current scores:', error);
-    return { cameronScore: 0, arunScore: 0, currentRound: 1 };
+    return { cameronScore: 0, arunScore: 0 };
   }
 };
 
