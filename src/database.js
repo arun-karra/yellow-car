@@ -6,9 +6,12 @@ let sql = null;
 try {
   console.log('Environment check - DATABASE_URL:', process.env.DATABASE_URL ? 'SET' : 'NOT SET');
   console.log('Environment check - import.meta.env.DATABASE_URL:', import.meta.env.DATABASE_URL ? 'SET' : 'NOT SET');
+  console.log('Environment check - VITE_DATABASE_URL:', process.env.VITE_DATABASE_URL ? 'SET' : 'NOT SET');
+  console.log('Environment check - import.meta.env.VITE_DATABASE_URL:', import.meta.env.VITE_DATABASE_URL ? 'SET' : 'NOT SET');
   
-  // Try both process.env and import.meta.env
-  const databaseUrl = process.env.DATABASE_URL || import.meta.env.DATABASE_URL;
+  // Try both process.env and import.meta.env, and both variable names
+  const databaseUrl = process.env.DATABASE_URL || import.meta.env.DATABASE_URL || 
+                     process.env.VITE_DATABASE_URL || import.meta.env.VITE_DATABASE_URL;
   
   if (databaseUrl) {
     console.log('Initializing Neon database connection...');
@@ -210,6 +213,13 @@ export const getCurrentScores = async () => {
   
   try {
     console.log('Fetching from database...');
+    // First check if the table exists
+    const tableCheck = await sql`SELECT EXISTS (
+      SELECT FROM information_schema.tables 
+      WHERE table_name = 'current_game'
+    )`;
+    console.log('Table exists check:', tableCheck);
+    
     const result = await sql`
       SELECT cameron_score, arun_score, current_round 
       FROM current_game 
