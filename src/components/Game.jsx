@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { saveRound } from '../database';
+import { saveRound, saveCurrentScores, getCurrentScores, saveWinCounts, getWinCounts } from '../database';
 import { format } from 'date-fns';
 import './Game.css';
 
@@ -16,20 +16,62 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
 
   // Load saved scores on component mount
   useEffect(() => {
-    const savedCameronScore = localStorage.getItem('yellowCarCameronScore');
-    const savedArunScore = localStorage.getItem('yellowCarArunScore');
-    const savedCameronWins = localStorage.getItem('yellowCarCameronWins');
-    const savedArunWins = localStorage.getItem('yellowCarArunWins');
+    const loadScores = async () => {
+      try {
+        const { cameronScore: savedCameronScore, arunScore: savedArunScore, currentRound: savedRound } = await getCurrentScores();
+        const { cameronWins: savedCameronWins, arunWins: savedArunWins } = await getWinCounts();
+        
+        setCameronScore(savedCameronScore);
+        setArunScore(savedArunScore);
+        setCameronWins(savedCameronWins);
+        setArunWins(savedArunWins);
+        
+        // Update the round if it's different
+        if (savedRound !== currentRound) {
+          onNewRound(savedRound);
+        }
+      } catch (error) {
+        console.error('Error loading scores:', error);
+      }
+    };
     
-    if (savedCameronScore) setCameronScore(parseInt(savedCameronScore));
-    if (savedArunScore) setArunScore(parseInt(savedArunScore));
-    if (savedCameronWins) setCameronWins(parseInt(savedCameronWins));
-    if (savedArunWins) setArunWins(parseInt(savedArunWins));
+    loadScores();
   }, []);
 
   useEffect(() => {
     checkGameStatus();
   }, [cameronScore, arunScore]);
+
+  // Poll for score updates from other devices
+  useEffect(() => {
+    const pollInterval = setInterval(async () => {
+      try {
+        const { cameronScore: savedCameronScore, arunScore: savedArunScore, currentRound: savedRound } = await getCurrentScores();
+        const { cameronWins: savedCameronWins, arunWins: savedArunWins } = await getWinCounts();
+        
+        // Only update if the scores are different (to avoid unnecessary re-renders)
+        if (savedCameronScore !== cameronScore) {
+          setCameronScore(savedCameronScore);
+        }
+        if (savedArunScore !== arunScore) {
+          setArunScore(savedArunScore);
+        }
+        if (savedCameronWins !== cameronWins) {
+          setCameronWins(savedCameronWins);
+        }
+        if (savedArunWins !== arunWins) {
+          setArunWins(savedArunWins);
+        }
+        if (savedRound !== currentRound) {
+          onNewRound(savedRound);
+        }
+      } catch (error) {
+        console.error('Error polling for updates:', error);
+      }
+    }, 2000); // Check every 2 seconds
+
+    return () => clearInterval(pollInterval);
+  }, [cameronScore, arunScore, cameronWins, arunWins, currentRound]);
 
   const checkGameStatus = () => {
     if (cameronScore >= TARGET_SCORE) {
@@ -52,35 +94,34 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
       if (winner === 'Cameron') {
         const newWins = cameronWins + 1;
         setCameronWins(newWins);
-        localStorage.setItem('yellowCarCameronWins', newWins.toString());
+        await saveWinCounts(newWins, arunWins);
       } else {
         const newWins = arunWins + 1;
         setArunWins(newWins);
-        localStorage.setItem('yellowCarArunWins', newWins.toString());
+        await saveWinCounts(cameronWins, newWins);
       }
     } catch (error) {
       console.error('Error saving round:', error);
     }
   };
 
-  const adjustScore = (player, amount) => {
+  const adjustScore = async (player, amount) => {
     if (player === 'cameron') {
       const newScore = Math.max(0, cameronScore + amount);
       setCameronScore(newScore);
-      localStorage.setItem('yellowCarCameronScore', newScore.toString());
+      await saveCurrentScores(newScore, arunScore, currentRound);
     } else {
       const newScore = Math.max(0, arunScore + amount);
       setArunScore(newScore);
-      localStorage.setItem('yellowCarArunScore', newScore.toString());
+      await saveCurrentScores(cameronScore, newScore, currentRound);
     }
   };
 
-  const startNewRound = () => {
+  const startNewRound = async () => {
     setCameronScore(0);
     setArunScore(0);
     setGameStatus('');
-    localStorage.removeItem('yellowCarCameronScore');
-    localStorage.removeItem('yellowCarArunScore');
+    await saveCurrentScores(0, 0, currentRound + 1);
     onNewRound();
   };
 
