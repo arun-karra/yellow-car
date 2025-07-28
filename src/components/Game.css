@@ -1,0 +1,395 @@
+.game {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.car-icon {
+  font-size: 20px;
+}
+
+.header-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.round-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.round-badge {
+  background: #22c55e;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.info-button, .reset-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.info-button {
+  background: white;
+  color: #1a1a1a;
+}
+
+.reset-button {
+  background: #ef4444;
+  color: white;
+}
+
+.target-info {
+  background: #f97316;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Game Status */
+.game-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fbbf24;
+  margin: 10px 0;
+}
+
+.trophy-icon {
+  font-size: 20px;
+}
+
+/* Player Cards */
+.player-cards {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+  margin: 20px 0;
+}
+
+.player-card {
+  flex: 1;
+  background: #2a2a2a;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  min-height: 200px;
+}
+
+.player-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.wins-badge {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.score-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  margin: 10px 0;
+}
+
+.cameron-score {
+  background: #3b82f6;
+}
+
+.arun-score {
+  background: #8b5cf6;
+}
+
+.score-controls {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  justify-content: center;
+}
+
+.score-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.score-button.minus {
+  background: #ef4444;
+  color: white;
+}
+
+.score-button.plus {
+  background: #22c55e;
+  color: white;
+}
+
+.score-button:active {
+  transform: scale(0.95);
+}
+
+/* Bottom Controls */
+.bottom-controls {
+  display: flex;
+  gap: 16px;
+  margin-top: auto;
+}
+
+.history-button {
+  flex: 1;
+  height: 56px;
+  border-radius: 12px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #2a2a2a;
+  color: white;
+}
+
+.button-icon {
+  font-size: 18px;
+}
+
+/* Info Modal */
+.info-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #2a2a2a;
+  border-radius: 16px;
+  padding: 24px;
+  margin: 20px;
+  max-width: 400px;
+  width: 100%;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.rules-section {
+  margin-bottom: 20px;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.yellow-car-rules {
+  background: linear-gradient(135deg, #3a5a3a, #2d4a2d);
+  border: 1px solid #4a7c4a;
+}
+
+.scoring {
+  background: linear-gradient(135deg, #5a3a2a, #4a2d2d);
+  border: 1px solid #7c4a4a;
+}
+
+.rules-section h4 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.rules-section ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.rules-section li {
+  margin-bottom: 6px;
+  line-height: 1.4;
+  font-size: 14px;
+}
+
+.rules-section p {
+  margin: 0;
+  line-height: 1.4;
+  font-size: 14px;
+}
+
+/* Reset Modal */
+.reset-modal {
+  text-align: center;
+}
+
+.reset-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.reset-modal h3 {
+  margin: 0 0 12px 0;
+  font-size: 20px;
+}
+
+.reset-modal p {
+  margin: 0 0 24px 0;
+  color: #9ca3af;
+  line-height: 1.4;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.cancel-button, .reset-confirm-button {
+  flex: 1;
+  height: 44px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-button {
+  background: #4a4a4a;
+  color: white;
+}
+
+.reset-confirm-button {
+  background: #ef4444;
+  color: white;
+}
+
+.cancel-button:active, .reset-confirm-button:active {
+  transform: scale(0.95);
+}
+
+/* iPhone-specific optimizations */
+@media (max-width: 375px) {
+  .game {
+    padding: 16px;
+    gap: 16px;
+  }
+  
+  .player-cards {
+    gap: 16px;
+  }
+  
+  .player-card {
+    padding: 16px;
+  }
+  
+  .score-circle {
+    width: 70px;
+    height: 70px;
+    font-size: 20px;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (orientation: landscape) and (max-height: 500px) {
+  .game {
+    padding: 12px;
+    gap: 12px;
+  }
+  
+  .player-cards {
+    margin: 10px 0;
+  }
+  
+  .player-card {
+    padding: 12px;
+    min-height: 150px;
+  }
+  
+  .score-circle {
+    width: 60px;
+    height: 60px;
+    font-size: 18px;
+  }
+} 

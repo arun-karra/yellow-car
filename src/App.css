@@ -1,0 +1,46 @@
+.app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #1a1a1a;
+  color: white;
+  overflow: hidden;
+}
+
+/* iPhone-specific safe area handling */
+@supports (padding: max(0px)) {
+  .app {
+    padding-top: max(env(safe-area-inset-top), 20px);
+    padding-bottom: max(env(safe-area-inset-bottom), 20px);
+    padding-left: max(env(safe-area-inset-left), 20px);
+    padding-right: max(env(safe-area-inset-right), 20px);
+  }
+}
+
+/* Prevent text selection */
+.app * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Allow text selection for inputs */
+.app input, .app textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Smooth transitions */
+.app * {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Touch-friendly button sizes */
+button {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Prevent zoom on input focus */
+input, textarea {
+  font-size: 16px;
+} 
