@@ -294,12 +294,18 @@ export const getCurrentScores = async () => {
     console.log('Database result:', result);
     
     if (result.length > 0) {
+      // Calculate the correct round number based on actual rounds history
+      const roundsCount = await sql`SELECT COUNT(*) as count FROM rounds`;
+      const actualRoundNumber = parseInt(roundsCount[0]?.count || 0) + 1;
+      console.log('Rounds count from database:', roundsCount[0]?.count);
+      console.log('Calculated actual round number:', actualRoundNumber);
+      
       const scores = {
         cameronScore: result[0].cameron_score,
         arunScore: result[0].arun_score,
-        currentRound: result[0].current_round
+        currentRound: actualRoundNumber
       };
-      console.log('Returning database scores:', scores);
+      console.log('Returning database scores with corrected round:', scores);
       return scores;
     } else {
       console.log('No database record found, returning defaults');
