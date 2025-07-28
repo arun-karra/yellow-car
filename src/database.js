@@ -97,6 +97,20 @@ export const saveRound = async (cameronScore, arunScore, winner) => {
       VALUES (${cameronScore}, ${arunScore}, ${winner}, NOW())
       RETURNING *
     `;
+    
+    // Get the count of rounds to calculate the new round number
+    const roundsCount = await sql`SELECT COUNT(*) as count FROM rounds`;
+    const newRoundNumber = parseInt(roundsCount[0]?.count || 0) + 1;
+    
+    // Update the current_game table with the new round number
+    await sql`DELETE FROM current_game WHERE id = 1`;
+    await sql`
+      INSERT INTO current_game (id, cameron_score, arun_score, current_round, updated_at)
+      VALUES (1, 0, 0, ${newRoundNumber}, NOW())
+    `;
+    
+    console.log('Round saved, updated current_game to round:', newRoundNumber);
+    
     return result[0];
   } catch (error) {
     console.error('Error saving round:', error);
@@ -144,6 +158,21 @@ export const deleteRound = async (roundId) => {
     // Verify the deletion by checking remaining rounds
     const remainingRounds = await sql`SELECT COUNT(*) as count FROM rounds`;
     console.log('Remaining rounds in database:', remainingRounds[0]?.count);
+    
+    // Update the current_game table to reflect the new round number
+    const newRoundNumber = parseInt(remainingRounds[0]?.count || 0) + 1;
+    console.log('Updating current_game table to round:', newRoundNumber);
+    
+    // Delete existing current game record
+    await sql`DELETE FROM current_game WHERE id = 1`;
+    
+    // Insert new current game record with updated round number
+    await sql`
+      INSERT INTO current_game (id, cameron_score, arun_score, current_round, updated_at)
+      VALUES (1, 0, 0, ${newRoundNumber}, NOW())
+    `;
+    
+    console.log('Successfully updated current_game table');
     
     return true;
   } catch (error) {
