@@ -167,22 +167,19 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
       {/* Header */}
       <div className="header">
         <div className="title">
-          <span className="car-icon">🚗</span>
-          Yellow Car
+          🚗 Yellow Car
         </div>
         <div className="header-controls">
-          <div className="round-info">
-            <span className="round-badge">Round {currentRound}</span>
-            <button 
-              className="info-button"
-              onClick={() => setShowInfo(!showInfo)}
-            >
-              ℹ️
-            </button>
-            <button className="reset-button" onClick={() => setShowResetModal(true)}>
-              ⛔️
-            </button>
-          </div>
+          <div className="round-badge">Round {currentRound}</div>
+          <button 
+            className="info-button"
+            onClick={() => setShowInfo(!showInfo)}
+          >
+            ℹ️
+          </button>
+          <button className="reset-button" onClick={() => setShowResetModal(true)}>
+            ⛔️
+          </button>
           <div className="target-info">Target {TARGET_SCORE}</div>
         </div>
       </div>
@@ -318,8 +315,8 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
 
       {/* Reset Modal */}
       {showResetModal && (
-        <div className="info-modal">
-          <div className="modal-content reset-modal">
+        <div className="reset-modal">
+          <div className="modal-content">
             <div className="reset-icon">⛔️</div>
             <h3>Reset Round?</h3>
             <p>This will reset both players' scores to 0. This action cannot be undone.</p>
