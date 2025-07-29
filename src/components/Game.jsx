@@ -296,11 +296,11 @@ const Game = ({ currentRound, roundStartTime, onNewRound, onViewHistory, onViewR
             <div className="rules-section yellow-car-rules">
               <h4>🚗 Yellow Car Rules</h4>
               <ul>
-                <li>Must have valid driver's license</li>
-                <li>Must be yellow in color</li>
-                <li>No ambulances count</li>
-                <li>Must be moving vehicle</li>
-                <li>Can't reuse same car</li>
+                <li>Must have four wheels</li>
+                <li>Must be yellow</li>
+                <li>No ambulances (out of respect 😔🙏🏼)</li>
+                <li>Must be majority yellow (if lorry etc)</li>
+                <li>Can't reuse a parked one in the same day</li>
                 <li>A false call is a FOUL and means losing a point</li>
               </ul>
             </div>
